@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reports - Medication Tracker</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&family=Playfair+Display:wght@700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <header class="header">
+        <h1>Medication Adherence Reports</h1>
+        <p class="typing-text">Track your progress over time.</p>
+    </header>
+
+    <div class="content">
+        <h2>Adherence Overview</h2>
+        <div id="report-overview">
+            <p>Total Medications: <span id="total-medications">5</span></p>
+            <p>Medications Taken: <span id="medications-taken">120</span></p>
+            <p>Missed Doses: <span id="missed-doses">10</span></p>
+            <p>Adherence Rate: <span id="adherence-rate">92%</span></p>
+        </div>
+
+        <h2>Monthly Adherence Chart</h2>
+        <div id="chart-container">
+            <!-- Placeholder for chart -->
+            <canvas id="adherence-chart"></canvas>
+        </div>
+
+        <button class="cta-button" id="download-report">Download Report</button>
+    </div>
+
+    <footer>
+        <div class="footer-content">
+            <p>&copy; 2024 Medication Adherence Tracker. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="script.js"></script>
+</body>
+
+</html>
