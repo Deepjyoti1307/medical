@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reports - Medication Tracker</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&family=Playfair+Display:wght@700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="/static/styles.css">
+</head>
+
+<body>
+    <header class="header">
+        <nav class="navbar">
+            <ul>
+                <li><a href="index.ejs">Home</a></li>
+                <li><a href="reports.ejs">Reports</a></li>
+                <li><a href="settings.ejs">Settings</a></li>
+                <li><a href="contact.ejs">Contact</a></li>
+            </ul>
+        </nav>
+        <h1>Medication Adherence Reports</h1>
+        <p class="typing-text">Track your progress over time.</p>
+    </header>
+
+    <div class="content">
+        <section class="overview">
+            <h2>Adherence Overview</h2>
+            <div id="report-overview">
+                <p>Total Medications: <span id="total-medications">5</span></p>
+                <p>Medications Taken: <span id="medications-taken">120</span></p>
+                <p>Missed Doses: <span id="missed-doses">10</span></p>
+                <p>Adherence Rate: <span id="adherence-rate">92%</span></p>
+            </div>
+        </section>
+
+        <section class="chart">
+            <h2>Monthly Adherence Chart</h2>
+            <div id="chart-container">
+                <!-- Placeholder for chart -->
+                <canvas id="adherence-chart"></canvas>
+            </div>
+        </section>
+
+        <section class="actions">
+            <button class="cta-button" id="download-report">Download Report</button>
+        </section>
+    </div>
+
+    <footer>
+        <div class="footer-content">
+            <p>&copy; 2024 Medication Adherence Tracker. All rights reserved.</p>
+            <nav class="footer-nav">
+                <ul>
+                    <li><a href="privacy.ejs">Privacy Policy</a></li>
+                    <li><a href="terms.ejs">Terms of Service</a></li>
+                    <li><a href="contact.ejs">Contact Us</a></li>
+                </ul>
+            </nav>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="/static/script.js"></script>
+</body>
+
+</html>

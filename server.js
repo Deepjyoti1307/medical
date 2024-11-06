@@ -1,62 +1,130 @@
 const express = require('express');
+const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
-const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
+const session = require('express-session');
+const path = require('path');
+require('dotenv').config();
+
 const app = express();
+
+// Connect to database
+mongoose.connect(process.env.MONGO_URI, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+    useFindAndModify: false
+}).then(() => console.log('MongoDB Connected'))
+    .catch(err => console.error(err));
+
+// Set view engine to EJS
+app.set('view engine', 'ejs');
+app.set('views', path.join(__dirname, 'views'));
+
+// Middleware
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
+app.use(express.static(path.join(__dirname, 'public')));
+
+// Models
+const User = mongoose.model('User', new mongoose.Schema({
+    username: { type: String, unique: true, required: true },
+    password: { type: String, required: true },
+    email: { type: String, unique: true, required: true },
+    medications: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Medication' }],
+    doctor_id: { type: mongoose.Schema.Types.ObjectId, ref: 'Doctor', required: false }
+}));
+
+const Medication = mongoose.model('Medication', new mongoose.Schema({
+    name: { type: String, required: true },
+    dosage: { type: String, required: true },
+    frequency: { type: String, required: true },
+    start_date: { type: Date, required: true },
+    user_id: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+    doctor_id: { type: mongoose.Schema.Types.ObjectId, ref: 'Doctor', required: false }
+}));
+
+const Dose = mongoose.model('Dose', new mongoose.Schema({
+    scheduled_time: { type: Date, required: true },
+    taken_time: { type: Date, required: false },
+    medication_id: { type: mongoose.Schema.Types.ObjectId, ref: 'Medication', required: true }
+}));
+
+const Doctor = mongoose.model('Doctor', new mongoose.Schema({
+    name: { type: String, required: true },
+    specialty: { type: String, required: true },
+    users: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
+    medications: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Medication' }]
+}));
+
+// Session configuration
+app.use(session({
+    secret: process.env.SECRET_KEY || 'your_secret_key',
+    resave: false,
+    saveUninitialized: true
+}));
+
+// Routes
+app.get('/', (req, res) => {
+    res.render('index');
+});
+
+app.get('/register', (req, res) => {
+    res.render('register');
+});
+
+app.post('/register', async (req, res) => {
+    const { username, password, email } = req.body;
+    const user = new User({ username, password, email });
+    await user.save();
+    res.redirect('/login');
+});
+
+app.get('/login', (req, res) => {
+    res.render('login');
+});
+
+app.post('/login', async (req, res) => {
+    const { username, password } = req.body;
+    const user = await User.findOne({ username, password });
+    if (user) {
+        req.session.user_id = user._id;
+        res.redirect('/dashboard');
+    } else {
+        res.redirect('/login');
+    }
+});
+
+app.get('/dashboard', async (req, res) => {
+    if (!req.session.user_id) {
+        return res.redirect('/login');
+    }
+    const user = await User.findById(req.session.user_id).populate('medications');
+    res.render('dashboard', { medications: user.medications });
+});
+
+app.get('/add_medication', (req, res) => {
+    res.render('add_medication');
+});
+
+app.post('/add_medication', async (req, res) => {
+    const { name, dosage, frequency, start_date } = req.body;
+    const medication = new Medication({
+        name,
+        dosage,
+        frequency,
+        start_date: new Date(start_date),
+        user_id: req.session.user_id
+    });
+    await medication.save();
+    res.redirect('/dashboard');
+});
+
+app.get('/logout', (req, res) => {
+    req.session.destroy();
+    res.redirect('/');
+});
+
+// Start server
 const PORT = process.env.PORT || 5000;
-
-app.use(bodyParser.json());
-app.use(express.static('public')); // Serve static files from 'public' directory
-
-const users = []; // In-memory user store
-
-// Register Route
-app.post('/api/register', (req, res) => {
-    const { username, password } = req.body;
-    if (users.find(user => user.username === username)) {
-        return res.status(400).json({ message: 'User already exists' });
-    }
-    const hashedPassword = bcrypt.hashSync(password, 8);
-    users.push({ username, password: hashedPassword });
-    res.status(201).json({ message: 'User registered successfully' });
-});
-
-// Login Route
-app.post('/api/login', (req, res) => {
-    const { username, password } = req.body;
-    const user = users.find(user => user.username === username);
-    if (!user || !bcrypt.compareSync(password, user.password)) {
-        return res.status(401).json({ message: 'Invalid credentials' });
-    }
-    const token = jwt.sign({ username }, 'your_jwt_secret', { expiresIn: '1h' });
-    res.json({ token });
-});
-
 app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`); const express = require('express');
-    const mongoose = require('mongoose');
-    const bodyParser = require('body-parser');
-    const cors = require('cors');
-
-    const app = express();
-    const port = 5000;
-
-    // Middleware
-    app.use(cors());
-    app.use(bodyParser.json());
-
-    // Connect to MongoDB
-    mongoose.connect('mongodb://localhost:27017/medication-tracker', {
-        useNewUrlParser: true,
-        useUnifiedTopology: true,
-    });
-
-    // Define routes
-    app.use('/api/auth', require('./routes/auth'));
-
-    // Start server
-    app.listen(port, () => {
-        console.log(`Server running on http://localhost:${port}`);
-    });
-
+    console.log(`Server running on port ${PORT}`);
 });

@@ -1,0 +1,28 @@
+<link rel="stylesheet" href="/static/styles.css">
+
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+    <h2 class="title">Add Medication</h2>
+    <form method="POST" class="form">
+        <div class="form-group">
+            <label for="name">Medication Name:</label>
+            <input type="text" name="name" class="form-control" required>
+        </div>
+        <div class="form-group">
+            <label for="dosage">Dosage:</label>
+            <input type="text" name="dosage" class="form-control" required>
+        </div>
+        <div class="form-group">
+            <label for="frequency">Frequency (per day):</label>
+            <input type="text" name="frequency" class="form-control" required>
+        </div>
+        <div class="form-group">
+            <label for="start_date">Start Date:</label>
+            <input type="date" name="start_date" class="form-control" required>
+        </div>
+        <button type="submit" class="btn btn-primary">Add Medication</button>
+    </form>
+</div>
+{% endblock %}
