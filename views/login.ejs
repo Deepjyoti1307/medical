@@ -6,25 +6,28 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
     <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
 </head>
 
 <body>
-    <header class="header">
-        <h1>Medication Tracker</h1>
-        <p class="typing-text">Never miss a dose!</p>
-    </header>
+    <div class="container">
+        <header class="header">
+            <h1>Medication Tracker</h1>
+            <p class="typing-text">Never miss a dose!</p>
+        </header>
 
-    <!-- Authentication Container -->
-    <div class="auth-container">
-        <h2>Login</h2>
-        <form id="login-form">
-            <label for="login-username">Username:</label>
-            <input type="text" id="login-username" name="username" required>
-            <label for="login-password">Password:</label>
-            <input type="password" id="login-password" name="password" required>
-            <button type="submit">Login</button>
-            <p>Don't have an account? <a href="register.ejs">Register</a></p>
-        </form>
+        <!-- Authentication Container -->
+        <div class="auth-container">
+            <h2>Login</h2>
+            <form id="login-form">
+                <label for="login-username">Username:</label>
+                <input type="text" id="login-username" name="username" class="input-field" required>
+                <label for="login-password">Password:</label>
+                <input type="password" id="login-password" name="password" class="input-field" required>
+                <button type="submit" class="btn">Login</button>
+                <p>Don't have an account? <a href="register.ejs">Register</a></p>
+            </form>
+        </div>
     </div>
 
     <script src="login.js"></script>
